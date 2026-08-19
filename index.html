@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Litoplas Control Tower</title>
+
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/sidebar.css">
+    <link rel="stylesheet" href="assets/css/table.css">
+    <link rel="stylesheet" href="assets/css/tracking.css">
+    <link rel="stylesheet" href="assets/css/modal.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">🚚 LITOPLAS CONTROL TOWER</div>
+        <div class="user">Nadinson Ramos</div>
+    </header>
+
+    <section class="dashboard">
+        <div class="kpi-card">
+            <span>Cargas activas</span>
+            <strong id="kpiCargasActivas">0</strong>
+        </div>
+        <div class="kpi-card">
+            <span>Entregadas</span>
+            <strong id="kpiEntregadas">0</strong>
+        </div>
+        <div class="kpi-card">
+            <span>Retrasadas</span>
+            <strong id="kpiRetrasadas">0</strong>
+        </div>
+        <div class="kpi-card">
+            <span>OTIF</span>
+            <strong id="kpiOTIF">0%</strong>
+        </div>
+        <div class="kpi-card">
+            <span>Alertas</span>
+            <strong id="kpiAlertas">0</strong>
+        </div>
+    </section>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="menu-title">Navegación</div>
+            <div class="menu-item">Dashboard</div>
+            <div class="menu-item">Cargas</div>
+            <div class="menu-item">Clientes</div>
+            <div class="menu-item">Documentos</div>
+            <div class="menu-item">Reportes</div>
+        </aside>
+
+        <section class="center-panel">
+            <div class="panel-title">
+                <span>Centro de Control Logístico</span>
+                <button id="btnNuevaCarga" class="btn-primary">➕ Nueva Carga</button>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="filtroPais">País</label>
+                    <select id="filtroPais" multiple></select>
+                </div>
+                <div class="filter-group">
+                    <label for="filtroCliente">Cliente</label>
+                    <select id="filtroCliente" multiple></select>
+                </div>
+                <div class="filter-group">
+                    <label for="busquedaGlobal">Buscar</label>
+                    <input id="busquedaGlobal" type="text" placeholder="CIIM, EXPO, OC, container...">
+                </div>
+            </div>
+
+            <div id="filtrosActivos" class="active-filters"></div>
+
+            <table id="tablaCargas">
+                <thead>
+                    <tr>
+                        <th>CIIM</th>
+                        <th>EXPO</th>
+                        <th>OC</th>
+                        <th>Cliente</th>
+                        <th>País</th>
+                        <th>Proceso</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+        <section class="tracking-panel">
+            <div class="tracking-tabs">
+                <button type="button">📍 Tracking</button>
+                <button type="button">📄 Información</button>
+                <button type="button">📎 Documentos</button>
+                <button type="button">🕒 Historial</button>
+            </div>
+            <div id="trackingContainer">Seleccione una carga...</div>
+        </section>
+    </div>
+
+    <div id="modalCarga" class="modal hidden">
+        <div class="modal-content">
+            <h3>Nueva carga</h3>
+            <form id="formCarga">
+                <div class="form-grid">
+                    <label>CIIM <input id="ciim" type="text"></label>
+                    <label>EXPO <input id="expo" type="text"></label>
+                    <label>OC <input id="oc" type="text"></label>
+                    <label>OCI <input id="oci" type="text"></label>
+                    <label>Cliente <input id="cliente" type="text"></label>
+                    <label>País
+                        <select id="pais"></select>
+                    </label>
+                    <label>Proceso
+                        <select id="proceso"></select>
+                    </label>
+                    <label>Container <input id="container" type="text"></label>
+                    <label>Fecha inicio <input id="fechaInicioProceso" type="date"></label>
+                    <label>Fecha compromiso <input id="fechaCompromiso" type="date"></label>
+                    <label>Factura LP <input id="facturaLP" type="text"></label>
+                    <label>Factura QB <input id="facturaQB" type="text"></label>
+                </div>
+                <label>Observaciones
+                    <textarea id="observaciones" rows="3"></textarea>
+                </label>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" data-close-modal="modalCarga">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar carga</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalEtapa" class="modal hidden">
+        <div class="modal-content">
+            <h3>Actualizar etapa</h3>
+            <form id="formEtapa">
+                <input id="cargaId" type="hidden">
+                <label>Etapa <input id="nombreEtapa" type="text" readonly></label>
+                <label>Fecha real <input id="fechaReal" type="date"></label>
+                <label>Responsable <input id="responsableEtapa" type="text"></label>
+                <label>Observaciones
+                    <textarea id="observacionEtapa" rows="3"></textarea>
+                </label>
+                <div class="modal-actions">
+                    <button type="button" id="cerrarModalEtapa" class="btn-secondary">Cerrar</button>
+                    <button type="submit" class="btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+{
+  "USA": {
+    "ExportacionDirecta": {
+
+      "Produccion": [
+        "Factura Comercial",
+        "Packing List",
+        "Certificado Calidad"
+      ],
+
+      "Transito Maritimo": [
+        "Bill of Lading",
+        "Booking",
+        "Shipping Instruction"
+      ],
+
+      "Warehouse": [
+        "POD Recepcion",
+        "Inventario Recibido",
+        "Fotos Recepcion"
+      ],
+
+      "Entrega Cliente": [
+        "POD Final"
+      ]
+    }
+  },
+
+  "Guatemala": {
+    "Exportacion": {
+
+      "Generacion Factura": [
+        "Factura",
+        "Lista Empaque"
+      ],
+
+      "Gestion Transporte": [
+        "Datos Unidad",
+        "BL"
+      ],
+
+      "Despacho Contenedor": [
+        "Foto Unidad Vacia",
+        "Foto Unidad Llena",
+        "Foto Sellos"
+      ]
+    }
+  },
+
+  "RepublicaDominicana": {
+
+    "Recepcion": {
+
+      "Ingreso Centro Logistico": [
+        "Correo Notificacion",
+        "Fotos Mercancia",
+        "Estado Carga"
+      ]
+    },
+
+    "Nacionalizacion": {
+
+      "Envio Facturas y Packing": [
+        "Factura",
+        "Lista Empaque"
+      ],
+
+      "Generacion DOL": [
+        "DOL"
+      ],
+
+      "Gestion Aduanal": [
+        "DUA",
+        "Min Hacienda"
+      ]
+    }
+  }
+}

@@ -1,0 +1,134 @@
+.filters{
+
+    display:flex;
+
+    gap:10px;
+
+    padding:15px;
+}
+
+.filters input{
+
+    flex:1;
+
+    padding:10px;
+
+    border:1px solid #ccc;
+
+    border-radius:6px;
+}
+
+.filters button{
+
+    padding:10px 20px;
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    border-radius:6px;
+}
+
+.active-filters{
+
+    padding:0 15px 15px;
+}
+
+.filter-tag{
+
+    background:#dbeafe;
+
+    color:#1d4ed8;
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+    margin-right:5px;
+
+    font-size:12px;
+}
+
+#tablaCargas{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+#tablaCargas th{
+
+    background:#2563eb;
+
+    color:white;
+
+    padding:10px;
+}
+
+#tablaCargas td{
+
+    padding:10px;
+
+    border-bottom:
+    1px solid #eee;
+}
+
+#tablaCargas tr:hover{
+
+    background:#eff6ff;
+
+    cursor:pointer;
+}
+
+.selected{
+
+    background:#dbeafe !important;
+}
+
+.filters{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:15px;
+
+    padding:15px;
+}
+
+.filter-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:5px;
+}
+
+.filter-group label{
+
+    font-size:12px;
+
+    font-weight:bold;
+
+    color:#475569;
+}
+
+.filter-group select{
+
+    min-height:90px;
+
+    padding:5px;
+}
+
+.filter-group input{
+
+    padding:10px;
+
+    border:1px solid #cbd5e1;
+
+    border-radius:6px;
+}

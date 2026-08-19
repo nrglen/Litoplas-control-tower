@@ -1,0 +1,31 @@
+[
+  {
+    "id": 1,
+    "nombre": "OrdenCompra_HD.pdf",
+    "tipo": "Orden Compra",
+    "fechaCarga": "2026-07-01",
+    "usuario": "Veronica Puche",
+    "version": 1,
+    "ruta": "/docs/OrdenCompra_HD.pdf"
+  },
+
+  {
+    "id": 2,
+    "nombre": "Requerimiento.xlsx",
+    "tipo": "Requerimiento",
+    "fechaCarga": "2026-07-01",
+    "usuario": "Veronica Puche",
+    "version": 1,
+    "ruta": "/docs/Requerimiento.xlsx"
+  },
+
+  {
+    "id": 3,
+    "nombre": "BL_MSCU1234567.pdf",
+    "tipo": "BL",
+    "fechaCarga": "2026-07-20",
+    "usuario": "Nadinson Ramos",
+    "version": 1,
+    "ruta": "/docs/BL_MSCU1234567.pdf"
+  }
+]

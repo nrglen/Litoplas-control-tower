@@ -1,0 +1,157 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,sans-serif;
+}
+
+body{
+    background:#f3f6fb;
+    height:100vh;
+    overflow:hidden;
+}
+
+.header{
+
+    height:70px;
+
+    background:#0f172a;
+
+    color:white;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:20px 30px;
+}
+
+.layout{
+
+    display:grid;
+
+    grid-template-columns:
+        220px
+        1fr
+        450px;
+
+    gap:15px;
+
+    height:calc(100vh - 150px);
+
+    padding:15px;
+}
+
+.panel-title{
+    padding:15px;
+    font-weight:bold;
+}
+
+.center-panel,
+.tracking-panel{
+
+    background:white;
+
+    border-radius:12px;
+
+    overflow:auto;
+
+    box-shadow:
+    0 2px 10px rgba(0,0,0,.08);
+}
+
+.dashboard{
+    display:grid;
+    grid-template-columns: repeat(5, minmax(120px, 1fr));
+    gap:15px;
+    padding:15px 15px 0;
+}
+
+.kpi-card{
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+    padding:16px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.kpi-card span{
+    color:#64748b;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+}
+
+.kpi-card strong{
+    font-size:32px;
+    color:#0f172a;
+}
+
+.btn-primary,
+.btn-secondary{
+    border:none;
+    border-radius:8px;
+    padding:10px 16px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.btn-primary{
+    background:#2563eb;
+    color:#fff;
+}
+
+.btn-secondary{
+    background:#e2e8f0;
+    color:#0f172a;
+}
+
+.panel-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+}
+
+.filter-group select,
+.filter-group input,
+.form-grid input,
+.form-grid select,
+textarea{
+    width:100%;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    padding:10px 12px;
+    font:inherit;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+    gap:12px;
+}
+
+.form-grid label,
+#formCarga label,
+#formEtapa label{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    font-size:13px;
+    color:#334155;
+}
+
+.modal-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:12px;
+}
+
+#tablaCargas thead th{
+    text-align:left;
+}

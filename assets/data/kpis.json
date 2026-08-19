@@ -1,0 +1,120 @@
+{
+  "dashboard": [
+    {
+      "id": "cargas_activas",
+      "nombre": "Cargas Activas",
+      "icono": "🚢",
+      "color": "#2563eb",
+      "tipo": "contador"
+    },
+    {
+      "id": "cargas_entregadas",
+      "nombre": "Entregadas",
+      "icono": "✅",
+      "color": "#16a34a",
+      "tipo": "contador"
+    },
+    {
+      "id": "cargas_retrasadas",
+      "nombre": "Retrasadas",
+      "icono": "⚠️",
+      "color": "#dc2626",
+      "tipo": "contador"
+    },
+    {
+      "id": "otif",
+      "nombre": "OTIF",
+      "icono": "🎯",
+      "color": "#7c3aed",
+      "tipo": "porcentaje"
+    },
+    {
+      "id": "documentos_pendientes",
+      "nombre": "Documentos Pendientes",
+      "icono": "📄",
+      "color": "#f59e0b",
+      "tipo": "contador"
+    },
+    {
+      "id": "entregas_semana",
+      "nombre": "Entregas Semana",
+      "icono": "📦",
+      "color": "#0891b2",
+      "tipo": "contador"
+    },
+    {
+      "id": "entregas_mes",
+      "nombre": "Entregas Mes",
+      "icono": "📆",
+      "color": "#0284c7",
+      "tipo": "contador"
+    },
+    {
+      "id": "desviacion_promedio",
+      "nombre": "Retraso Promedio",
+      "icono": "⏱️",
+      "color": "#ea580c",
+      "tipo": "dias"
+    }
+  ],
+
+  "paises": [
+    {
+      "id": "usa_activas",
+      "nombre": "USA",
+      "tipo": "cargas_por_pais"
+    },
+    {
+      "id": "gua_activas",
+      "nombre": "Guatemala",
+      "tipo": "cargas_por_pais"
+    },
+    {
+      "id": "rd_activas",
+      "nombre": "República Dominicana",
+      "tipo": "cargas_por_pais"
+    }
+  ],
+
+  "alertas": [
+    {
+      "id": "eta_vencidos",
+      "nombre": "ETA Vencidos",
+      "severidad": "alta"
+    },
+    {
+      "id": "documentos_faltantes",
+      "nombre": "Documentos Faltantes",
+      "severidad": "media"
+    },
+    {
+      "id": "warehouse_pendiente",
+      "nombre": "Pendiente de Recepción Warehouse",
+      "severidad": "media"
+    },
+    {
+      "id": "pod_pendiente",
+      "nombre": "POD Pendiente",
+      "severidad": "baja"
+    }
+  ],
+
+  "graficos": [
+    {
+      "id": "cargas_por_pais",
+      "tipo": "bar"
+    },
+    {
+      "id": "cargas_por_estado",
+      "tipo": "pie"
+    },
+    {
+      "id": "entregas_por_mes",
+      "tipo": "line"
+    },
+    {
+      "id": "otif_mensual",
+      "tipo": "line"
+    }
+  ]
+}

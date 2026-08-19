@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "nombre": "Phoenix/Tekniplex",
+    "pais": "USA"
+  },
+  {
+    "id": 2,
+    "nombre": "Abimar",
+    "pais": "USA"
+  },
+  {
+    "id": 3,
+    "nombre": "Pepsico",
+    "pais": "RD"
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "codigo": "USA",
+    "nombre": "Estados Unidos",
+    "activo": true
+  },
+  {
+    "id": 2,
+    "codigo": "GUA",
+    "nombre": "Guatemala",
+    "activo": true
+  },
+  {
+    "id": 3,
+    "codigo": "RD",
+    "nombre": "Republica Dominicana",
+    "activo": true
+  }
+]

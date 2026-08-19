@@ -1,0 +1,387 @@
+{
+  "USA": {
+    "ExportacionDirecta": {
+      "nombre": "Exportación Directa",
+      "color": "#2563eb",
+      "etapas": [
+        {
+          "orden": 1,
+          "nombre": "Solicitud Cliente",
+          "icono": "📋",
+          "duracionDias": 1,
+          "responsable": "Cliente",
+          "documentosRequeridos": [
+            "Orden de Compra",
+            "Requerimiento"
+          ]
+        },
+        {
+          "orden": 2,
+          "nombre": "Verificacion",
+          "icono": "🔍",
+          "duracionDias": 1,
+          "responsable": "Coordinador Internacional",
+          "documentosRequeridos": []
+        },
+        {
+          "orden": 3,
+          "nombre": "Planeacion",
+          "icono": "🏭",
+          "duracionDias": 5,
+          "responsable": "Planeacion"
+    
+        },
+        {
+          "orden": 4,
+          "nombre": "Produccion",
+          "icono": "🏭",
+          "duracionDias": 5,
+          "responsable": "Planta Colombia"
+          
+        },
+        {
+          "orden": 5,
+          "nombre": "Facturacion nacional",
+          "icono": "🏭",
+          "duracionDias": 5,
+          "responsable": "Planta Colombia",
+          "documentosRequeridos": [
+            "Factura Comercial",
+            "Packing List",
+            "Certificado Calidad"
+          ]
+        },
+        {
+          "orden": 6,
+          "nombre": "Transporte Puerto",
+          "icono": "🚛",
+          "duracionDias": 2,
+          "responsable": "Transportador",
+          "documentosRequeridos": [
+            "Datos Transporte"
+          ]
+        },
+        {
+          "orden": 7,
+          "nombre": "Puerto Origen",
+          "icono": "⚓",
+          "duracionDias": 1,
+          "responsable": "Forwarder",
+          "documentosRequeridos": [
+            "Booking"
+          ]
+        },
+        {
+          "orden": 8,
+          "nombre": "Transito Maritimo",
+          "icono": "🚢",
+          "duracionDias": 12,
+          "responsable": "Naviera",
+          "documentosRequeridos": [
+            "Bill of Lading",
+            "Shipping Instruction",
+            "Booking Confirmation"
+          ]
+        },
+        {
+          "orden": 9,
+          "nombre": "Puerto USA",
+          "icono": "⚓",
+          "duracionDias": 1,
+          "responsable": "Forwarder USA",
+          "documentosRequeridos": [
+            "Arrival Notice"
+          ]
+        },
+        {
+          "orden": 10,
+          "nombre": "Warehouse",
+          "icono": "🏢",
+          "duracionDias": 2,
+          "responsable": "Warehouse USA",
+          "documentosRequeridos": [
+            "POD Recepcion",
+            "Inventario Recibido",
+            "Fotos Recepcion"
+          ]
+        },
+        {
+          "orden": 11,
+          "nombre": "Inland Freight",
+          "icono": "🚚",
+          "duracionDias": 2,
+          "responsable": "Carrier USA",
+          "documentosRequeridos": [
+            "POD Transporte"
+          ]
+        },
+        {
+          "orden": 12,
+          "nombre": "Entrega Cliente",
+          "icono": "📦",
+          "duracionDias": 1,
+          "responsable": "Cliente",
+          "documentosRequeridos": [
+            "POD Final",
+            "Confirmacion Entrega"
+          ]
+        }
+      ]
+    },
+
+    "InventarioUSA": {
+      "nombre": "Inventario USA",
+      "color": "#16a34a",
+      "etapas": [
+        
+        {
+          "orden": 1,
+          "nombre": "Pedido Cliente"
+        },
+        {
+          "orden": 2,
+          "nombre": "Picking",
+           "duracionDias": 1
+        },
+        {
+          "orden": 3,
+          "nombre": "Despacho",
+           "duracionDias": 1
+        },
+        {
+          "orden": 4,
+          "nombre": "Entrega Cliente",
+           "duracionDias": 1
+        }
+      ]
+    }
+  },
+
+  "Guatemala": {
+    "DespachoNacional": {
+      "nombre": "Despacho Nacional",
+      "etapas": [
+        {
+          "orden": 1,
+          "nombre": "Requerimiento Cliente",
+          "responsable": "Veronica Puche",
+          "documentosRequeridos": [
+            "Lista Requerimiento",
+            "Orden Compra"
+          ]
+        },
+        {
+          "orden": 2,
+          "nombre": "Consolidado",
+          "responsable": "Carlos Lopez",
+          "documentosRequeridos": [
+            "Consolidado"
+          ]
+        },
+        {
+          "orden": 3,
+          "nombre": "Generacion Documentacion",
+          "responsable": "Gabriel",
+          "documentosRequeridos": [
+            "Factura",
+            "Picking",
+            "Remision",
+            "Certificado Calidad"
+          ]
+        },
+        {
+          "orden": 4,
+          "nombre": "Coordinacion Transporte",
+          "responsable": "Marvin",
+          "documentosRequeridos": [
+            "Datos Unidad Transporte"
+          ]
+        },
+        {
+          "orden": 5,
+          "nombre": "Despacho"
+        }
+      ]
+    },
+
+    "Exportacion": {
+      "nombre": "Exportacion",
+      "etapas": [
+        {
+          "orden": 1,
+          "nombre": "Requerimiento Cliente",
+          "responsable": "Yoscelyn / Veronica"
+        },
+        {
+          "orden": 2,
+          "nombre": "Consolidado",
+          "responsable": "Carlos Lopez"
+        },
+        {
+          "orden": 3,
+          "nombre": "Generacion Factura",
+          "responsable": "Marvin",
+          "documentosRequeridos": [
+            "Factura",
+            "Lista Empaque"
+          ]
+        },
+        {
+          "orden": 4,
+          "nombre": "Alistamiento",
+          "responsable": "Gabriel"
+        },
+        {
+          "orden": 5,
+          "nombre": "Gestion Transporte",
+          "responsable": "Comex / Adilmar",
+          "documentosRequeridos": [
+            "Datos Unidad",
+            "BL"
+          ]
+        },
+        {
+          "orden": 6,
+          "nombre": "Despacho Contenedor",
+          "responsable": "Gabriel",
+          "documentosRequeridos": [
+            "Foto Unidad Vacia",
+            "Foto Unidad Llena",
+            "Foto Sellos"
+          ]
+        },
+        {
+          "orden": 7,
+          "nombre": "Arrivo puerto destino"
+        }
+      ]
+    },
+
+    "Devoluciones": {
+      "nombre": "Devoluciones",
+      "etapas": [
+        {
+          "orden": 1,
+          "nombre": "Alerta Calidad"
+        },
+        {
+          "orden": 2,
+          "nombre": "Analisis Caso"
+        },
+        {
+          "orden": 3,
+          "nombre": "Gestion Devolucion"
+        },
+        {
+          "orden": 4,
+          "nombre": "Cierre"
+        }
+      ]
+    }
+  },
+
+  "RepublicaDominicana": {
+    "Recepcion": {
+      "nombre": "Recepcion RD",
+      "etapas": [
+        {
+          "orden": 1,
+          "nombre": "Pre Alerta"
+        },
+        {
+          "orden": 2,
+          "nombre": "Recepcion Puerto",
+          "responsable": "HBW"
+        },
+        {
+          "orden": 3,
+          "nombre": "Ingreso Centro Logistico",
+          "responsable": "HBW",
+          "documentosRequeridos": [
+            "Correo Notificacion",
+            "Fotos Mercancia",
+            "Estado Carga"
+          ]
+        }
+      ]
+    },
+
+    "Nacionalizacion": {
+      "nombre": "Nacionalizacion RD",
+      "etapas": [
+        {
+          "orden": 1,
+          "nombre": "Solicitud Nacionalizacion",
+          "responsable": "Veronica Puche"
+        },
+        {
+          "orden": 2,
+          "nombre": "Envio Facturas y Packing",
+          "responsable": "Nadinson Ramos",
+          "duracionDias": 1
+        },
+        {
+          "orden": 3,
+          "nombre": "Generacion DOL",
+          "responsable": "HBW",
+          "duracionDias": 1
+        },
+        {
+          "orden": 4,
+          "nombre": "Gestion Aduanal",
+          "responsable": "Agente Aduanal",
+          "duracionDias": 3
+        },
+        {
+          "orden": 5,
+          "nombre": "Envio Documentacion Final",
+          "responsable": "Nadinson Ramos"
+        }
+      ]
+    },
+
+    "DespachoNacional": {
+      "nombre": "Despacho Nacional RD",
+      "etapas": [
+        {
+          "orden": 1,
+          "nombre": "Solicitud Cliente",
+          "responsable": "Veronica Puche"
+        },
+        {
+          "orden": 2,
+          "nombre": "Consolidado",
+          "responsable": "Carlos Lopez"
+        },
+        {
+          "orden": 3,
+          "nombre": "Certificados Calidad",
+          "responsable": "Equipo Calidad Guatemala"
+        },
+        {
+          "orden": 4,
+          "nombre": "Factura y Packing",
+          "responsable": "Nadinson Ramos"
+        },
+        {
+          "orden": 5,
+          "nombre": "Documentacion Cliente",
+          "responsable": "Nadinson Ramos"
+        },
+        {
+          "orden": 6,
+          "nombre": "Gestion Despacho",
+          "responsable": "HBW"
+        },
+        {
+          "orden": 7,
+          "nombre": "Entrega Cliente"
+        },
+        {
+          "orden": 8,
+          "nombre": "Confirmacion Recibido"
+        }
+      ]
+    }
+  }
+}

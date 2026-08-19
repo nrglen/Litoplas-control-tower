@@ -1,0 +1,136 @@
+.tracking-panel{
+
+    background:white;
+}
+
+.tracking-header{
+
+    padding:20px;
+
+    border-bottom:
+    1px solid #eee;
+}
+
+.timeline{
+
+    padding:20px;
+}
+
+.timeline-item{
+
+    display:flex;
+
+    margin-bottom:20px;
+
+    gap:15px;
+}
+
+.icon{
+
+    width:40px;
+
+    height:40px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:white;
+}
+
+.done .icon{
+    background:#22c55e;
+}
+
+.current .icon{
+    background:#2563eb;
+}
+
+.future .icon{
+    background:#94a3b8;
+}
+
+.stage{
+
+    background:#f8fafc;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    width:100%;
+}
+
+.stage-detail{
+
+    display:none;
+
+    margin-top:15px;
+
+    border-top:1px solid #e5e7eb;
+
+    padding-top:15px;
+
+}
+
+.stage-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.toggle-stage{
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    border-radius:6px;
+
+    padding:6px 12px;
+
+    cursor:pointer;
+
+}
+
+.documents-section{
+
+    margin-top:15px;
+
+}
+
+.document-item{
+
+    padding:8px;
+
+    margin-top:5px;
+
+    border-radius:6px;
+
+}
+
+.complete{
+
+    background:#dcfce7;
+
+    border-left:4px solid #16a34a;
+
+}
+
+.missing{
+
+    background:#f8fafc;
+
+    border-left:4px solid #94a3b8;
+
+}

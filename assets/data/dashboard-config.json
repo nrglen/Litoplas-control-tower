@@ -1,0 +1,46 @@
+{
+  "widgets": [
+    {
+      "id": "cargas_activas",
+      "fila": 1,
+      "columna": 1,
+      "ancho": 1,
+      "alto": 1
+    },
+    {
+      "id": "otif",
+      "fila": 1,
+      "columna": 2,
+      "ancho": 1,
+      "alto": 1
+    },
+    {
+      "id": "documentos_pendientes",
+      "fila": 1,
+      "columna": 3,
+      "ancho": 1,
+      "alto": 1
+    },
+    {
+      "id": "entregas_semana",
+      "fila": 1,
+      "columna": 4,
+      "ancho": 1,
+      "alto": 1
+    },
+    {
+      "id": "cargas_por_pais",
+      "fila": 2,
+      "columna": 1,
+      "ancho": 2,
+      "alto": 2
+    },
+    {
+      "id": "cargas_por_estado",
+      "fila": 2,
+      "columna": 3,
+      "ancho": 2,
+      "alto": 2
+    }
+  ]
+}

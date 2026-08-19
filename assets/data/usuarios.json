@@ -1,0 +1,43 @@
+[
+  {
+    "id": 1,
+    "nombre": "Nadinson Ramos",
+    "correo": "nramos@litoplas.com",
+    "rol": "Administrador"
+  },
+
+  {
+    "id": 2,
+    "nombre": "Veronica Puche",
+    "correo": "vpuche@litoplas.com",
+    "rol": "Coordinador"
+  },
+
+  {
+    "id": 3,
+    "nombre": "Carlos Lopez",
+    "correo": "clopez@litoplas.com",
+    "rol": "Operaciones"
+  },
+
+  {
+    "id": 4,
+    "nombre": "Gabriel",
+    "correo": "gabriel@litoplas.com",
+    "rol": "Operaciones"
+  },
+
+  {
+    "id": 5,
+    "nombre": "Marvin",
+    "correo": "marvin@litoplas.com",
+    "rol": "Transporte"
+  },
+
+  {
+    "id": 6,
+    "nombre": "HBW",
+    "correo": "operaciones@hbw.com",
+    "rol": "Centro Logistico"
+  }
+]

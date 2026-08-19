@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "tipo": "Retraso",
+    "cargaId": 1,
+    "severidad": "Alta",
+    "mensaje": "Carga EXP-001 presenta retraso de 7 dias",
+    "fecha": "2026-07-20",
+    "leida": false
+  }
+]

@@ -1,0 +1,19 @@
+[
+  {
+    "id":1,
+    "cargaId":1,
+    "fecha":"2026-07-20 09:15",
+    "usuario":"Gabriel",
+    "accion":"Documento agregado",
+    "detalle":"BL.pdf"
+  },
+
+  {
+    "id":2,
+    "cargaId":1,
+    "fecha":"2026-07-20 09:16",
+    "usuario":"Sistema",
+    "accion":"ETA recalculada",
+    "detalle":"Nueva ETA 2026-08-05"
+  }
+]

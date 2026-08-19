@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "cargaId": 1,
+    "estadoActual": "Transito Maritimo",
+    "retrasoAcumuladoDias": 7,
+    "porcentajeCompletado": 60,
+    "fechaCreacion": "2026-07-01",
+
+    "etapas": [
+      {
+        "id": 1,
+        "nombre": "Solicitud Cliente",
+        "estado": "completado",
+        "fechaPlan": "2026-07-01",
+        "fechaReal": "2026-07-01",
+        "responsable": "Home Depot",
+        "observaciones": "",
+        "documentos": [1,2]
+      },
+      {
+        "id": 2,
+        "nombre": "Verificacion",
+        "estado": "completado",
+        "fechaPlan": "2026-07-02",
+        "fechaReal": "2026-07-02",
+        "responsable": "Veronica Puche",
+        "observaciones": "",
+        "documentos": []
+      },
+      {
+        "id": 3,
+        "nombre": "Transito Maritimo",
+        "estado": "actual",
+        "fechaPlan": "2026-07-19",
+        "fechaReal": "2026-07-20",
+        "responsable": "MSC",
+        "observaciones": "Carga embarcada",
+        "documentos": [3,4,5]
+      }
+    ],
+    "observaciones":[
+     {
+        "fecha":"2026-07-10",
+        "usuario":"Nadinson Ramos",
+        "comentario":"Demora por materia prima"
+     },
+     {
+      "fecha":"2026-07-11",
+      "usuario":"Gabriel",
+      "comentario":"Producción completada"
+     }
+  ]
+}
+  
+]

@@ -1,0 +1,24 @@
+{
+  "estadosCarga": [
+    "Planeacion",
+    "Produccion",
+    "Puerto Origen",
+    "Transito Maritimo",
+    "Puerto Destino",
+    "Warehouse",
+    "Inland Freight",
+    "Entrega Cliente"
+  ],
+
+  "tiposDocumento": [
+    "Factura Comercial",
+    "Packing List",
+    "BL",
+    "Booking",
+    "DUA",
+    "DOL",
+    "Certificado Calidad",
+    "POD",
+    "Fotos"
+  ]
+}
