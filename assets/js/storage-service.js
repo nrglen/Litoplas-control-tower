@@ -177,19 +177,26 @@ class StorageService {
         const trackings =
             this.getTrackings();
 
+        // Asegurar que cargaId sea un número
+        const cargaIdNum = Number(cargaId);
+        trackingActualizado.cargaId = cargaIdNum;
+
         const index =
             trackings.findIndex(
 
                 item =>
-                    item.cargaId ==
-                    cargaId
+                    Number(item.cargaId) ==
+                    cargaIdNum
 
             );
 
         if(index < 0){
-
-            return false;
-
+            trackings.push(trackingActualizado);
+            this.set(
+                this.keys.tracking,
+                trackings
+            );
+            return true;
         }
 
         trackings[index] =

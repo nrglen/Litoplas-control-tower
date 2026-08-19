@@ -21,7 +21,8 @@
     "Fecha fact quickbook": "",
     "# fact QB": "",
     "estadoActual": "Entregado",
-    "fechaCompromiso": "10/08/2026"
+    "fechaCompromiso": "10/08/2026",
+    "fechaInicioProceso": "2026-07-01"
   },
   {
     "id": 2,
@@ -44,7 +45,8 @@
     "Fecha fact quickbook": "",
     "# fact QB": "",
     "estadoActual": "Entregado",
-    "fechaCompromiso": "05/08/2026"
+    "fechaCompromiso": "05/08/2026",
+    "fechaInicioProceso": "2026-07-01"
   },
   {
     "id": 3,
@@ -67,7 +69,8 @@
     "Fecha fact quickbook": "",
     "# fact QB": "",
     "estadoActual": "En warehouse",
-    "fechaCompromiso": "20/08/2026"
+    "fechaCompromiso": "20/08/2026",
+    "fechaInicioProceso": "2026-07-01"
   },
   {
     "id": 4,
@@ -90,7 +93,8 @@
     "Fecha fact quickbook": "",
     "# fact QB": "",
     "estadoActual": "Entregado",
-    "fechaCompromiso": "13/08/2026"
+    "fechaCompromiso": "13/08/2026",
+    "fechaInicioProceso": "2026-07-01"
   },
   {
     "id": 5,
@@ -113,7 +117,8 @@
     "Fecha fact quickbook": "",
     "# fact QB": "",
     "estadoActual": "En aguas",
-    "fechaCompromiso": "10/09/2026"
+    "fechaCompromiso": "10/09/2026",
+    "fechaInicioProceso": "2026-07-01"
   },
   {
     "id": 6,
@@ -136,7 +141,8 @@
     "Fecha fact quickbook": "",
     "# fact QB": "",
     "estadoActual": "En puerto origen",
-    "fechaCompromiso": "14/09/2026"
+    "fechaCompromiso": "14/09/2026",
+    "fechaInicioProceso": "2026-07-01"
   },
   {
     "id": 7,
@@ -159,7 +165,8 @@
     "Fecha fact quickbook": "",
     "# fact QB": "",
     "estadoActual": "En puerto origen",
-    "fechaCompromiso": "14/09/2026"
+    "fechaCompromiso": "14/09/2026",
+    "fechaInicioProceso": "2026-07-01"
   },
   {
     "id": 8,
@@ -169,6 +176,7 @@
     "oci": "1012",
     "container": "",
     "cliente": "Phoenix/Tekniplex",
+    "fechaInicioProceso": "2026-07-01",
     "pais": "USA",
     "proceso": "ExportacionDirecta",
     "fact-lp": "",

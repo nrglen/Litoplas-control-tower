@@ -22,10 +22,6 @@ class App {
             procesos: [],
             estados: [],
             meses: [],
-            ciim: "",
-            expo: "",
-            oc: "",
-            container: "",
             textoGlobal: ""
         };
 
@@ -45,20 +41,25 @@ class App {
         await this.cargaForm.cargarProcesos();
         await this.etapaForm.init();
 
-
         this.renderTabla();
-
         this.renderDashboard();
-
         this.configurarEventos();
 
         if(this.cargas.length > 0){
-
-            trackingView.cargarTimeline(
-                this.cargas[0].id
-            );
-
+            trackingView.cargarTimeline(this.cargas[0].id, this.cargas[0]);
         }
+
+        window.addEventListener("online", async () => {
+            await this.cargarDatos();
+            await this.cargarCombos();
+            this.renderTabla();
+            this.aplicarFiltros();
+            this.renderDashboard();
+
+            if(this.cargas.length > 0){
+                trackingView.cargarTimeline(this.cargas[0].id, this.cargas[0]);
+            }
+        });
 
     }
 
@@ -70,23 +71,96 @@ class App {
 
     async cargarCombos(){
 
-    const paises =
-        await dataService.getPaises();
+        const paises =
+            await dataService.getPaises();
 
-    const clientes =
-        await dataService.getClientes();
+        const clientes =
+            await dataService.getClientes();
 
-    filterView.llenarSelect(
-        "filtroPais",
-        paises,
-        "nombre"
-    );
+        const procesos =
+            [...new Set(
+                this.cargas
+                    .map(carga => carga.proceso)
+                    .filter(Boolean)
+            )];
 
-    filterView.llenarSelect(
-        "filtroCliente",
-        clientes,
-        "nombre"
-    );
+        const estados =
+            [...new Set(
+                this.cargas
+                    .map(carga => carga.estadoActual)
+                    .filter(Boolean)
+            )];
+
+        const mesesMap = new Map();
+
+        this.cargas.forEach(carga => {
+            if(!carga.fechaCompromiso){
+                return;
+            }
+
+            const fecha =
+                carga.fechaCompromiso.includes("/")
+                    ? new Date(
+                        carga.fechaCompromiso.split("/").reverse().join("-")
+                    )
+                    : new Date(carga.fechaCompromiso);
+
+            if(isNaN(fecha.getTime())){
+                return;
+            }
+
+            const year = fecha.getFullYear();
+            const month = String(fecha.getMonth() + 1).padStart(2, "0");
+            const value = `${year}-${month}`;
+            const label = new Intl.DateTimeFormat("es-ES", {
+                month: "short",
+                year: "numeric"
+            }).format(fecha);
+
+            if(!mesesMap.has(value)){
+                mesesMap.set(value, {
+                    value,
+                    label: label.replace(".", "").trim()
+                });
+            }
+        });
+
+        const meses = [...mesesMap.values()].sort((a, b) => {
+            return new Date(`${a.value}-01`) - new Date(`${b.value}-01`);
+        });
+
+        filterView.llenarSelect(
+            "filtroPais",
+            paises.map(pais => ({
+                value: pais.codigo,
+                label: pais.nombre
+            })),
+            "value"
+        );
+
+        filterView.llenarSelect(
+            "filtroCliente",
+            clientes,
+            "nombre"
+        );
+
+        filterView.llenarSelect(
+            "filtroProceso",
+            procesos.map(valor => ({ nombre: valor })),
+            "nombre"
+        );
+
+        filterView.llenarSelect(
+            "filtroEstado",
+            estados.map(valor => ({ nombre: valor })),
+            "nombre"
+        );
+
+        filterView.llenarSelect(
+            "filtroMes",
+            meses,
+            "value"
+        );
 
     }
 
@@ -108,6 +182,14 @@ class App {
 
             this.alertas =
                 await dataService.getAlertas();
+
+            storageService.inicializarDatos(
+                this.cargas,
+                this.trackings,
+                this.alertas,
+                [],
+                []
+            );
 
         }
         catch(error){
@@ -180,25 +262,18 @@ class App {
 
         let resultado =
             filterEngine.filtrarCargas(
-
                 this.cargas,
-
                 this.filtros
-
             );
 
         resultado =
             filterEngine.busquedaGlobal(
-
                 resultado,
-
                 this.filtros.textoGlobal
-
             );
 
-        this.actualizarTabla(
-            resultado
-        );
+        this.actualizarTabla(resultado);
+        filterView.renderFiltrosActivos(this.filtros);
 
     }
 
@@ -291,6 +366,93 @@ class App {
     ============================
     */
 
+    configurarFiltros(){
+
+        const campos = [
+            { id: "filtroPais", clave: "paises" },
+            { id: "filtroCliente", clave: "clientes" },
+            { id: "filtroProceso", clave: "procesos" },
+            { id: "filtroEstado", clave: "estados" },
+            { id: "filtroMes", clave: "meses" }
+        ];
+
+        campos.forEach(({ id, clave }) => {
+            const elemento = document.getElementById(id);
+            if(!elemento){
+                return;
+            }
+
+            const actualizar = () => {
+                if(elemento.tagName === "SELECT"){
+                    this.filtros[clave] = [...elemento.selectedOptions].map(option => option.value);
+                } else {
+                    this.filtros[clave] = elemento.value;
+                }
+
+                this.aplicarFiltros();
+            };
+
+            if(elemento.tagName === "SELECT"){
+                elemento.addEventListener("mousedown", (event) => {
+                    if(!elemento.multiple){
+                        return;
+                    }
+
+                    const option = event.target.closest("option");
+                    if(!option){
+                        return;
+                    }
+
+                    option.selected = !option.selected;
+                    event.preventDefault();
+                    actualizar();
+                });
+                elemento.addEventListener("change", actualizar);
+            } else {
+                elemento.addEventListener("input", actualizar);
+            }
+        });
+
+        const buscador = document.getElementById("busquedaGlobal");
+        if(buscador){
+            buscador.addEventListener("keyup", (event) => {
+                this.filtros.textoGlobal = event.target.value;
+                this.aplicarFiltros();
+            });
+        }
+
+    }
+
+    sincronizarEstadoCarga(cargaId, tracking){
+
+        const cargasGuardadas = storageService.getCargas();
+        const cargaGuardadaIndex = cargasGuardadas.findIndex(item => item.id == cargaId);
+
+        if(cargaGuardadaIndex >= 0 && tracking && tracking.estadoActual){
+            cargasGuardadas[cargaGuardadaIndex] = {
+                ...cargasGuardadas[cargaGuardadaIndex],
+                estadoActual: tracking.estadoActual
+            };
+            storageService.set(storageService.keys.cargas, cargasGuardadas);
+        }
+
+        const cargaIndex = this.cargas.findIndex(item => item.id == cargaId);
+        if(cargaIndex >= 0 && tracking && tracking.estadoActual){
+            this.cargas[cargaIndex] = {
+                ...this.cargas[cargaIndex],
+                estadoActual: tracking.estadoActual
+            };
+        }
+
+        const trackingIndex = this.trackings.findIndex(item => item.cargaId == cargaId);
+        if(trackingIndex >= 0){
+            this.trackings[trackingIndex] = tracking;
+        } else if(tracking){
+            this.trackings.push(tracking);
+        }
+
+    }
+
     configurarEventos(){
 
         document.addEventListener(
@@ -313,8 +475,13 @@ class App {
                     fila
                 );
 
+                const carga =
+                    this.cargas.find(
+                        item => item.id == id
+                    );
+
                 await trackingView
-                    .cargarTimeline(id);
+                    .cargarTimeline(id, carga);
 
             }
         );
@@ -326,36 +493,30 @@ class App {
                 const cargaId =
                     event.detail.cargaId;
 
+                const tracking =
+                    storageService.getTrackings().find(item => item.cargaId == cargaId);
+
+                if(tracking){
+                    this.sincronizarEstadoCarga(cargaId, tracking);
+                }
+
+                this.renderTabla();
+                this.aplicarFiltros();
+                this.renderDashboard();
+
+                const carga =
+                    this.cargas.find(item => item.id == cargaId);
+
                 await trackingView
                     .cargarTimeline(
-                        cargaId
+                        cargaId,
+                        carga
                     );
-
-                this.renderDashboard();
 
             }
         );
 
-        const buscador =
-            document.getElementById(
-                "busquedaGlobal"
-            );
-
-        if(buscador){
-
-            buscador.addEventListener(
-                "keyup",
-                (event)=>{
-
-                    this.filtros.textoGlobal =
-                        event.target.value;
-
-                    this.aplicarFiltros();
-
-                }
-            );
-
-        }
+        this.configurarFiltros();
 
     }
 

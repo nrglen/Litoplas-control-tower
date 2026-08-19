@@ -19,6 +19,7 @@ class BusinessRules {
         );
     }
 
+
     calcularRetraso(fechaPlan, fechaReal){
 
         if(!fechaPlan || !fechaReal){
@@ -30,6 +31,7 @@ class BusinessRules {
             fechaReal
         );
     }
+
 
     /*
     ========================================
@@ -87,6 +89,7 @@ class BusinessRules {
         return resultado;
     }
 
+
     /*
     ========================================
     ETA
@@ -98,16 +101,13 @@ class BusinessRules {
         const ultimaEtapa =
             etapas[etapas.length - 1];
 
-        if(!ultimaEtapa){
-            return null;
-        }
-
         return (
             ultimaEtapa.fechaProyectada ||
             ultimaEtapa.fechaReal ||
             ultimaEtapa.fechaPlan
         );
     }
+
 
     /*
     ========================================
@@ -127,6 +127,7 @@ class BusinessRules {
             : "No Definido";
     }
 
+
     /*
     ========================================
     PORCENTAJE COMPLETADO
@@ -137,10 +138,6 @@ class BusinessRules {
 
         const total = etapas.length;
 
-        if(total === 0){
-            return 0;
-        }
-
         const completadas =
             etapas.filter(
                 e => e.estado === "completado"
@@ -150,6 +147,7 @@ class BusinessRules {
             (completadas / total) * 100
         );
     }
+
 
     /*
     ========================================
@@ -187,6 +185,7 @@ class BusinessRules {
         return retraso;
     }
 
+
     /*
     ========================================
     DOCUMENTOS
@@ -209,6 +208,7 @@ class BusinessRules {
              documentosRequeridos) * 100
         );
     }
+
 
     validarDocumentosEtapa(
         documentosSubidos,
@@ -235,6 +235,7 @@ class BusinessRules {
         };
 
     }
+
 
     /*
     ========================================
@@ -271,6 +272,7 @@ class BusinessRules {
 
     }
 
+
     /*
     ========================================
     ALERTAS
@@ -303,7 +305,9 @@ class BusinessRules {
                         severidad: "Alta",
 
                         mensaje:
-                         `${etapa.nombre} presenta un retraso de ${retraso} días`
+                         `${etapa.nombre}
+                         presenta un retraso
+                         de ${retraso} días`
 
                     });
 
@@ -316,6 +320,7 @@ class BusinessRules {
         return alertas;
 
     }
+
 
     /*
     ========================================
@@ -347,16 +352,6 @@ class BusinessRules {
     RESUMEN DE CARGA
     ========================================
     */
-
-    resumenCarga(carga){
-
-        return {
-            eta: carga.fechaCompromiso || null,
-            progreso: this.porcentajeCompletado(carga.etapas || []),
-            estado: carga.estadoActual || "Sin estado"
-        };
-    }
-
 }
 
 export default new BusinessRules();

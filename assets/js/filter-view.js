@@ -22,11 +22,18 @@ class FilterView {
                     "option"
                 );
 
-            option.value =
-                item[campo];
+            const valor =
+                typeof item === "object" && item !== null
+                    ? (item.value ?? item[campo] ?? "")
+                    : item;
 
-            option.textContent =
-                item[campo];
+            const texto =
+                typeof item === "object" && item !== null
+                    ? (item.label ?? item[campo] ?? valor)
+                    : item;
+
+            option.value = valor;
+            option.textContent = texto;
 
             select.appendChild(option);
 

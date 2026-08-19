@@ -2,6 +2,7 @@ import dataService from "./data-service.js";
 import timelineEngine from "./timeline-engine.js";
 import documentsView from "./documents-view.js";
 import etapaForm from "./etapa-form.js";
+import storageService from "./storage-service.js";
 
 class TrackingView {
 
@@ -14,7 +15,7 @@ class TrackingView {
 
     }
 
-    async cargarTimeline(cargaId){
+    async cargarTimeline(cargaId, carga = null){
 
         const trackings =
             await dataService.getTracking();
@@ -22,16 +23,31 @@ class TrackingView {
         const procesos =
             await dataService.getProcesos();
 
-        const tracking =
+        let tracking =
             trackings.find(
                 item => item.cargaId == cargaId
             );
 
         if(!tracking){
+            tracking = {
+                cargaId,
+                estadoActual: "Solicitud Cliente",
+                etapas: []
+            };
+        }
 
-            this.mostrarError();
-            return;
+        if(carga && procesos?.[carga.pais]?.[carga.proceso]){
+            tracking = this.fusionarEtapasConProceso(
+                tracking,
+                procesos[carga.pais][carga.proceso]
+            );
+        }
 
+        const trackingsGuardados = storageService.getTrackings();
+        const existeTrackingGuardado = trackingsGuardados.some(item => item.cargaId == cargaId);
+
+        if(!existeTrackingGuardado){
+            storageService.updateTracking(cargaId, tracking);
         }
 
         const resumen =
@@ -44,6 +60,54 @@ class TrackingView {
             resumen,
             procesos
         );
+
+    }
+
+    fusionarEtapasConProceso(tracking, proceso){
+
+        const etapasBase = Array.isArray(proceso?.etapas)
+            ? proceso.etapas
+            : [];
+
+        const etapasActuales = Array.isArray(tracking?.etapas)
+            ? tracking.etapas
+            : [];
+
+        const etapasMap = new Map();
+
+        etapasActuales.forEach(etapa => {
+            if(etapa && etapa.nombre){
+                etapasMap.set(etapa.nombre, etapa);
+            }
+        });
+
+        const etapasCompletas = etapasBase.map(etapaBase => {
+            const etapaActual = etapasMap.get(etapaBase.nombre) || {};
+            return {
+                ...etapaBase,
+                ...etapaActual,
+                estado: etapaActual.estado || "futuro",
+                responsable: etapaActual.responsable || etapaBase.responsable || "",
+                documentos: etapaActual.documentos || [],
+                documentosRequeridos: etapaActual.documentosRequeridos || etapaBase.documentosRequeridos || [],
+                observaciones: etapaActual.observaciones || "",
+                fechaPlan: etapaActual.fechaPlan || etapaBase.fechaPlan || null,
+                fechaReal: etapaActual.fechaReal || null,
+                fechaProyectada: etapaActual.fechaProyectada || null,
+                retraso: etapaActual.retraso || 0
+            };
+        });
+
+        const etapaActual =
+            etapasCompletas.find(etapa => etapa.estado === "actual") ||
+            etapasCompletas[0] ||
+            { nombre: tracking.estadoActual || "Solicitud Cliente" };
+
+        return {
+            ...tracking,
+            estadoActual: tracking.estadoActual || etapaActual.nombre || "Solicitud Cliente",
+            etapas: etapasCompletas
+        };
 
     }
 
@@ -67,17 +131,24 @@ class TrackingView {
                 ${resumen.avance}%
             </p>
 
+            <p>
+                Etapa actual:
+                ${resumen.etapaActual?.nombre || tracking.estadoActual || "-"}
+            </p>
+
         </div>
 
         <div class="timeline">
 
         `;
 
-        resumen.etapas.forEach(etapa=>{
+        resumen.etapas.forEach((etapa,index)=>{
 
             html += this.renderEtapa(
                 etapa,
-                tracking
+                tracking,
+                index,
+                resumen.etapaActual
             );
 
         });
@@ -92,20 +163,21 @@ class TrackingView {
 
     }
 
-    renderEtapa(etapa, tracking){
+    renderEtapa(etapa, tracking, index, etapaActual){
 
-        const clase = this.obtenerClase(
-            etapa.estado
-        );
+        const isCurrent =
+            etapa.estado === "actual" ||
+            (etapaActual && (etapaActual.nombre === etapa.nombre || etapaActual === etapa.nombre)) ||
+            tracking.estadoActual === etapa.nombre;
+
+        const clase = isCurrent
+            ? "current"
+            : (etapa.estado === "completado" ? "done" : "future");
 
         const fecha =
-
             etapa.fechaReal ||
-
             etapa.fechaProyectada ||
-
             etapa.fechaPlan ||
-
             "-";
 
         const documentos =
@@ -120,84 +192,72 @@ class TrackingView {
                 documentosRequeridos
             );
 
+        const detalleVisible = isCurrent ? "block" : "none";
+        const textoBoton = detalleVisible === "block" ? "Ocultar" : "Ver más";
+
         return `
 
         <div class="timeline-item ${clase}">
 
+            <div class="timeline-connector"></div>
+
             <div class="icon">
-
-                ${this.obtenerIcono(
-                    etapa.nombre
-                )}
-
+                ${this.obtenerIcono(etapa.nombre)}
             </div>
 
             <div class="stage">
 
                 <div class="stage-header">
 
-                    <h4>
-                        ${etapa.nombre}
-                    </h4>
+                    <div class="stage-title-group">
+                        <h4>${etapa.nombre}</h4>
+                        <span class="stage-badge ${clase}">
+                            ${isCurrent ? "Etapa actual" : (etapa.estado === "completado" ? "Completada" : "Pendiente")}
+                        </span>
+                    </div>
 
-                <div class="stage-header">
- 
-                    <button
-                        class="editar-etapa"
-                        data-carga="${tracking.cargaId}"
-                        data-etapa="${etapa.nombre}">
-                        Actualizar
-                    </button>
- 
+                    <div class="stage-actions">
+                        <button
+                            class="editar-etapa"
+                            data-carga="${tracking.cargaId}"
+                            data-etapa="${etapa.nombre}">
+                            Actualizar
+                        </button>
+
+                        <button
+                            class="toggle-stage"
+                            type="button"
+                            aria-expanded="${detalleVisible === "block" ? "true" : "false"}">
+                            ${textoBoton}
+                        </button>
+                    </div>
+
                 </div>
+
                 <div class="stage-summary">
-
-                    Fecha:
-                    ${fecha}
-
+                    Fecha: ${fecha}
                 </div>
 
-                <div class="stage-detail">
+                <div class="stage-detail" style="display:${detalleVisible}">
 
                     <p>
-
-                        <strong>
-                        Responsable:
-                        </strong>
-
+                        <strong>Responsable:</strong>
                         ${etapa.responsable || "-"}
-
                     </p>
 
                     <p>
-
-                        <strong>
-                        Observaciones:
-                        </strong>
-
-                        ${
-                            etapa.observaciones ||
-                            "Sin observaciones"
-                        }
-
+                        <strong>Observaciones:</strong>
+                        ${etapa.observaciones || "Sin observaciones"}
                     </p>
 
                     <p>
-
-                        <strong>
-                        Completitud documental:
-                        </strong>
-
+                        <strong>Completitud documental:</strong>
                         ${completitud}%
-
                     </p>
 
                     ${documentsView.renderDocumentos(
-
                         documentos,
-
                         documentosRequeridos
-
                     )}
 
                 </div>
@@ -322,75 +382,67 @@ class TrackingView {
 
 configurarBotonesEditar(){
 
-    const botones =
+const botones =
 
-        document.querySelectorAll(
-            ".editar-etapa"
-        );
+    document.querySelectorAll(
+        ".editar-etapa"
+    );
 
-    botones.forEach(boton => {
+botones.forEach(boton => {
 
-        boton.addEventListener(
+    boton.addEventListener(
 
-            "click",
+        "click",
 
-            () => {
+        () => {
 
-                const cargaId =
-                    Number(
-                        boton.dataset.carga
-                    );
-
-                const nombreEtapa =
-                    boton.dataset.etapa;
-
-                const trackings =
-                    JSON.parse(
-                        localStorage.getItem(
-                            "litoplas_tracking"
-                        )
-                    ) || [];
-
-                const tracking =
-                    trackings.find(
-
-                        item =>
-                            item.cargaId ===
-                            cargaId
-
-                    );
-
-                if(!tracking){
-
-                    return;
-
-                }
-
-                const etapa =
-                    tracking.etapas.find(
-
-                        item =>
-                            item.nombre ===
-                            nombreEtapa
-
-                    );
-
-                if(!etapa){
-
-                    return;
-
-                }
-
-                etapaForm.abrir(
-                    cargaId,
-                    etapa
+            const cargaId =
+                Number(
+                    boton.dataset.carga
                 );
 
+            const nombreEtapa =
+                boton.dataset.etapa;
+
+            const trackings =
+                storageService.getTrackings();
+
+            const tracking =
+                trackings.find(
+
+                    item =>
+                        item.cargaId ===
+                        cargaId
+
+                );
+
+            if(!tracking){
+                return;
             }
 
-        );
+            const etapa =
+                tracking.etapas.find(
 
-    });
+                    item =>
+                        item.nombre ===
+                        nombreEtapa
+
+                );
+
+            if(!etapa){
+                return;
+            }
+
+            etapaForm.abrir(
+                cargaId,
+                etapa
+            );
+
+        }
+
+    );
+
+});
 
 }
 }

@@ -1,5 +1,6 @@
 import storageService from "./storage-service.js";
 import timelineEngine from "./timeline-engine.js";
+import dataService from "./data-service.js";
 
 class EtapaForm {
 
@@ -19,7 +20,17 @@ class EtapaForm {
 
     init(){
 
+        // Re-obtener elementos por si no estaban disponibles en el constructor
+        if(!this.modal){
+            this.modal = document.getElementById("modalEtapa");
+        }
+
         if(!this.form){
+            this.form = document.getElementById("formEtapa");
+        }
+
+        if(!this.form){
+            console.warn("formEtapa no encontrado en DOM");
             return;
         }
 
@@ -99,155 +110,231 @@ class EtapaForm {
 
     }
 
-    guardar(){
+    async guardar(){
 
-        const cargaId =
-            Number(
-                document
-                .getElementById(
-                    "cargaId"
-                ).value
-            );
+const cargaId =
+    Number(
+        document
+        .getElementById(
+            "cargaId"
+        ).value
+    );
 
-        const nombreEtapa =
-            document
-            .getElementById(
-                "nombreEtapa"
-            ).value;
+const nombreEtapa =
+    document
+    .getElementById(
+        "nombreEtapa"
+    ).value;
 
-        const fechaReal =
-            document
-            .getElementById(
-                "fechaReal"
-            ).value;
+const fechaReal =
+    document
+    .getElementById(
+        "fechaReal"
+    ).value;
 
-        const responsable =
-            document
-            .getElementById(
-                "responsableEtapa"
-            ).value;
+const responsable =
+    document
+    .getElementById(
+        "responsableEtapa"
+    ).value;
 
-        const observaciones =
-            document
-            .getElementById(
-                "observacionEtapa"
-            ).value;
+const observaciones =
+    document
+    .getElementById(
+        "observacionEtapa"
+    ).value;
 
-        const trackings =
-            storageService
-                .getTrackings();
+let trackings =
+    storageService
+        .getTrackings();
 
-        const tracking =
-            trackings.find(
+let tracking =
+    trackings.find(
 
-                item =>
-                    item.cargaId ===
-                    cargaId
+        item =>
+            item.cargaId ===
+            cargaId
 
-            );
+    );
 
-        if(!tracking){
+if(!tracking){
 
-            alert(
-                "Tracking no encontrada"
-            );
+    const baseTracking =
+        await dataService.getTracking();
 
-            return;
+    tracking =
+        baseTracking.find(
+            item => item.cargaId === cargaId
+        ) || {
+            cargaId: Number(cargaId),
+            estadoActual: "Solicitud Cliente",
+            etapas: []
+        };
+
+    if(!tracking.etapas || tracking.etapas.length === 0){
+        const procesos = await dataService.getProcesos();
+        const cargas = await dataService.getCargas();
+        const cargaActual = cargas.find(item => item.id === cargaId);
+
+        if(cargaActual && procesos[cargaActual.pais] && procesos[cargaActual.pais][cargaActual.proceso]){
+            const proceso = procesos[cargaActual.pais][cargaActual.proceso];
+            tracking.etapas = (proceso.etapas || []).map(etapa => ({
+                ...etapa,
+                estado: "futuro",
+                documentos: [],
+                documentosRequeridos: etapa.documentosRequeridos || [],
+                observaciones: "",
+                responsable: etapa.responsable || "",
+                fechaPlan: null,
+                fechaReal: null,
+                fechaProyectada: null,
+                retraso: 0
+            }));
         }
+    }
 
-        const etapa =
-            tracking.etapas.find(
+    storageService.updateTracking(cargaId, tracking);
+    trackings = storageService.getTrackings();
+}
 
-                item =>
-                    item.nombre ===
-                    nombreEtapa
+const indice =
+    tracking.etapas.findIndex(
 
-            );
+        item =>
+            item.nombre ===
+            nombreEtapa
 
-        if(!etapa){
+    );
 
-            alert(
-                "Etapa no encontrada"
-            );
+if(indice < 0){
 
-            return;
+    alert(
+        "Etapa no encontrada"
+    );
+
+    return;
+}
+
+tracking.etapas =
+    tracking.etapas.map(
+        (etapa, index) => {
+            if(index < indice){
+                return {
+                    ...etapa,
+                    estado: "completado",
+                    responsable: etapa.responsable || responsable,
+                    observaciones: etapa.observaciones || observaciones
+                };
+            }
+
+            if(index === indice){
+                return {
+                    ...etapa,
+                    fechaReal,
+                    responsable,
+                    observaciones,
+                    estado: "completado"
+                };
+            }
+
+            if(index === indice + 1){
+                return {
+                    ...etapa,
+                    estado: "actual"
+                };
+            }
+
+            return {
+                ...etapa,
+                estado: "futuro"
+            };
         }
+    );
 
-        etapa.fechaReal =
-            fechaReal;
+const etapaActual =
+    tracking.etapas.find(
+        etapa => etapa.estado === "actual"
+    );
 
-        etapa.responsable =
-            responsable;
+tracking.estadoActual =
+    etapaActual
+        ? etapaActual.nombre
+        : "Finalizado";
 
-        etapa.observaciones =
-            observaciones;
-
-        etapa.estado =
-            "completado";
-
-        const indice =
-            tracking.etapas.findIndex(
-
-                item =>
-                    item.nombre ===
-                    nombreEtapa
-
-            );
-
-        const siguiente =
-            tracking.etapas[
-                indice + 1
-            ];
-
-        if(
-            siguiente &&
-            siguiente.estado ===
-            "futuro"
-        ){
-
-            siguiente.estado =
-                "actual";
-
-            tracking.estadoActual =
-                siguiente.nombre;
-
-        }
-
-        tracking.etapas =
-            timelineEngine
-                .recalcularEtapas(
-
-                    tracking.etapas
-
-                );
-
-        storageService
-            .updateTracking(
-
-                cargaId,
-
-                tracking
-
-            );
-
-        storageService
-            .registrarHistorial(
-
-                cargaId,
-
-                "Usuario",
-
-                "Actualización de etapa",
-
-                `${nombreEtapa} completada`
-
-            );
-
-        alert(
-            "Etapa actualizada"
+tracking.etapas =
+    timelineEngine
+        .recalcularEtapas(
+            tracking.etapas
         );
 
-        this.cerrar();
+tracking.porcentajeCompletado =
+    timelineEngine
+        .calcularAvance(
+            tracking.etapas
+        );
+
+let retraso = 0;
+
+tracking.etapas.forEach(
+    etapa => {
+        if(etapa.retraso > 0){
+            retraso += etapa.retraso;
+        }
+    }
+);
+
+tracking.retrasoAcumuladoDias = retraso;
+
+storageService
+    .updateTracking(
+        cargaId,
+        tracking
+    );
+
+const cargasGuardadas =
+    storageService.getCargas();
+
+const cargaIndex =
+    cargasGuardadas.findIndex(
+        item => item.id == cargaId
+    );
+
+if(cargaIndex >= 0){
+    cargasGuardadas[cargaIndex] = {
+        ...cargasGuardadas[cargaIndex],
+        estadoActual: tracking.estadoActual
+    };
+
+    storageService.set(
+        storageService.keys.cargas,
+        cargasGuardadas
+    );
+}
+
+storageService
+.registrarHistorial(
+        cargaId,
+        "Usuario",
+        "Actualización de etapa",
+        `${nombreEtapa} completada`
+    );
+
+window.dispatchEvent(
+    new CustomEvent(
+        "trackingActualizado",
+        {
+            detail: {
+                cargaId
+            }
+        }
+    )
+);
+
+alert(
+    "Etapa actualizada"
+);
+
+this.cerrar();
 
     }
 

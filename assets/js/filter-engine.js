@@ -92,11 +92,29 @@ class FilterEngine {
 
         }
 
-        const mes =
-            new Date(fecha)
-            .getMonth() + 1;
+        const fechaReal =
+            fecha.includes("/")
+                ? new Date(
+                    fecha.split("/").reverse().join("-")
+                )
+                : new Date(fecha);
 
-        return meses.includes(mes);
+        if(isNaN(fechaReal.getTime())){
+            return false;
+        }
+
+        const mesKey = `${fechaReal.getFullYear()}-${String(fechaReal.getMonth() + 1).padStart(2, "0")}`;
+
+        return meses.some(valor => {
+            const valorNormalizado = this.normalizar(valor);
+            const mesNormalizado = this.normalizar(mesKey);
+            const mesNumero = this.normalizar(String(fechaReal.getMonth() + 1));
+
+            return (
+                valorNormalizado === mesNormalizado ||
+                valorNormalizado === mesNumero
+            );
+        });
 
     }
 
@@ -140,30 +158,6 @@ class FilterEngine {
                     filtros.meses
                 );
 
-            const ciimValido =
-                this.matchTexto(
-                    carga.ciim,
-                    filtros.ciim
-                );
-
-            const expoValido =
-                this.matchTexto(
-                    carga.expo,
-                    filtros.expo
-                );
-
-            const ocValido =
-                this.matchTexto(
-                    carga.oc,
-                    filtros.oc
-                );
-
-            const containerValido =
-                this.matchTexto(
-                    carga.container,
-                    filtros.container
-                );
-
             return (
 
                 paisValido
@@ -183,22 +177,6 @@ class FilterEngine {
                 &&
 
                 mesValido
-
-                &&
-
-                ciimValido
-
-                &&
-
-                expoValido
-
-                &&
-
-                ocValido
-
-                &&
-
-                containerValido
 
             );
 

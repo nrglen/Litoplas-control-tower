@@ -1,78 +1,95 @@
 class DataService {
 
-async getCargas(){
+    leerCache(clave){
 
-    const response =
-        await fetch(
-            "assets/data/cargas.json"
-        );
+        try{
+            const raw = localStorage.getItem(clave);
+            return raw ? JSON.parse(raw) : null;
+        }
+        catch(error){
+            console.warn("No fue posible leer caché", error);
+            return null;
+        }
 
-    return await response.json();
+    }
 
-}
+    guardarCache(clave, datos){
 
-async getTracking(){
+        try{
+            localStorage.setItem(clave, JSON.stringify(datos));
+        }
+        catch(error){
+            console.warn("No fue posible guardar caché", error);
+        }
 
-    const response =
-        await fetch(
-            "assets/data/tracking.json"
-        );
+    }
 
-    return await response.json();
+    async fetchJson(ruta, clave){
 
-}
+        const cache = this.leerCache(clave);
 
-async getDocumentos(){
-    const response =
-        await fetch(
-            "assets/data/documentos.json"
-        );
+        try{
+            const response = await fetch(ruta);
 
-    return await response.json();
+            if(!response.ok){
+                throw new Error(`HTTP ${response.status}`);
+            }
 
-}
+            const datos = await response.json();
+            this.guardarCache(clave, datos);
+            return datos;
+        }
+        catch(error){
+            if(cache !== null){
+                console.warn(`Usando caché para ${ruta} por fallo de conexión.`);
+                return cache;
+            }
 
+            console.error(`No se pudo cargar ${ruta}`, error);
+            return [];
+        }
 
-async getProcesos(){
+    }
 
-    const response =
-        await fetch(
-            "assets/data/procesos.json"
-        );
+    async getCargas(){
+        const cargasGuardadas = this.leerCache("litoplas_cargas");
 
-    return await response.json();
+        if(Array.isArray(cargasGuardadas) && cargasGuardadas.length > 0){
+            return cargasGuardadas;
+        }
 
-}
+        return this.fetchJson("assets/data/cargas.json", "litoplas_cache_cargas");
+    }
 
-async getAlertas(){
+    async getTracking(){
+        const trackingGuardado = this.leerCache("litoplas_tracking");
 
-    const response =
-        await fetch(
-            "assets/data/alertas.json"
-        );
+        if(Array.isArray(trackingGuardado) && trackingGuardado.length > 0){
+            return trackingGuardado;
+        }
 
-    return await response.json();
+        return this.fetchJson("assets/data/tracking.json", "litoplas_cache_tracking");
+    }
 
-}
-async getPaises(){
+    async getDocumentos(){
+        return this.fetchJson("assets/data/documentos.json", "litoplas_cache_documentos");
+    }
 
-    const response =
-        await fetch(
-            "assets/data/paises.json"
-        );
+    async getProcesos(){
+        return this.fetchJson("assets/data/procesos.json", "litoplas_cache_procesos");
+    }
 
-    return await response.json();
-}
+    async getAlertas(){
+        return this.fetchJson("assets/data/alertas.json", "litoplas_cache_alertas");
+    }
 
-async getClientes(){
+    async getPaises(){
+        return this.fetchJson("assets/data/paises.json", "litoplas_cache_paises");
+    }
 
-    const response =
-        await fetch(
-            "assets/data/clientes.json"
-        );
-
-    return await response.json();
-}
+    async getClientes(){
+        return this.fetchJson("assets/data/clientes.json", "litoplas_cache_clientes");
+    }
 
 }
 
