@@ -16,7 +16,62 @@ class CargaForm {
                 "modalCarga"
             );
 
+        this.modoEdicion = false;
+
+        this.cargaEditando = null;
+
     }
+
+    abrirEdicion(carga){
+
+    this.modoEdicion = true;
+
+    this.cargaEditando = carga;
+
+    document.getElementById("ciim").value =
+        carga.ciim || "";
+
+    document.getElementById("expo").value =
+        carga.expo || "";
+
+    document.getElementById("oc").value =
+        carga.oc || "";
+
+    document.getElementById("oci").value =
+        carga.oci || "";
+
+    document.getElementById("cliente").value =
+        carga.cliente || "";
+
+    document.getElementById("pais").value =
+        carga.pais || "";
+
+    document.getElementById("proceso").value =
+        carga.proceso || "";
+
+    document.getElementById("container").value =
+        carga.container || "";
+
+    document.getElementById("fechaInicioProceso").value =
+        carga.fechaInicioProceso || "";
+
+    document.getElementById("fechaCompromiso").value =
+        carga.fechaCompromiso || "";
+
+    document.getElementById("facturaLP").value =
+        carga.facturaLP || "";
+
+    document.getElementById("facturaQB").value =
+        carga.facturaQB || "";
+
+    document.getElementById("observaciones").value =
+        carga.observaciones || "";
+
+    document
+        .getElementById("modalCarga")
+        .classList.remove("hidden");
+
+}
 
     abrir(){
 
@@ -210,11 +265,60 @@ class CargaForm {
             datos
         );
 
-        storageService.saveCarga(datos);
+        if(this.modoEdicion){
 
+    storageService.updateCarga(
+
+        this.cargaEditando.id,
+
+        datos
+
+    );
+
+}else{
+
+    storageService.saveCarga(
+        datos
+    );
+
+}
+ this.modoEdicion = false;
+
+    this.cargaEditando = null;
         await this.generarTracking(
             datos
-        );   
+        );
+
+        
+
+        if(esEdicion){
+
+    window.dispatchEvent(
+        new CustomEvent(
+            "cargaActualizada",
+            {
+                detail:{
+                    carga: datos
+                }
+            }
+        )
+    );
+
+}else{
+
+    window.dispatchEvent(
+        new CustomEvent(
+            "cargaCreada",
+            {
+                detail:{
+                    carga: datos
+                }
+            }
+        )
+    );
+
+}
+
         alert(
             "Carga creada correctamente"
         );

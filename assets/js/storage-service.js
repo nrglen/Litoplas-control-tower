@@ -426,6 +426,56 @@ class StorageService {
     =====================================
     */
 
+    deleteCarga(cargaId){
+
+    this.set(
+
+        this.keys.cargas,
+
+        this.getCargas()
+            .filter(
+                item => item.id != cargaId
+            )
+
+    );
+
+    this.set(
+
+        this.keys.tracking,
+
+        this.getTrackings()
+            .filter(
+                item => item.cargaId != cargaId
+            )
+
+    );
+
+    this.set(
+
+        this.keys.historial,
+
+        this.getHistorial()
+            .filter(
+                item => item.cargaId != cargaId
+            )
+
+    );
+
+    this.set(
+
+        this.keys.documentos,
+
+        this.getDocumentos()
+            .filter(
+                item => item.cargaId != cargaId
+            )
+
+    );
+
+}
+
+
+
     reset(){
 
         Object.values(this.keys)

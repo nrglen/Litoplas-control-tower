@@ -1,0 +1,17 @@
+Arquitectura:
+95%
+
+Modelo de Datos:
+95%
+
+Lógica de Negocio:
+85%
+
+Interfaz:
+60%
+
+Integración:
+40%
+
+MVP Operativo:
+70%

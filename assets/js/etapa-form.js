@@ -256,10 +256,26 @@ const etapaActual =
         etapa => etapa.estado === "actual"
     );
 
-tracking.estadoActual =
-    etapaActual
-        ? etapaActual.nombre
-        : "Finalizado";
+const todasCompletadas =
+    tracking.etapas.every(
+        etapa => etapa.estado === "completado"
+    );
+
+if(todasCompletadas){
+
+    tracking.estadoActual =
+        "Entregado";
+    tracking.fechaEntregaReal =
+        fechaReal;
+
+}else{
+
+    tracking.estadoActual =
+        etapaActual
+            ? etapaActual.nombre
+            : "Solicitud Cliente";
+
+}
 
 tracking.etapas =
     timelineEngine
@@ -300,15 +316,27 @@ const cargaIndex =
     );
 
 if(cargaIndex >= 0){
+
     cargasGuardadas[cargaIndex] = {
+
         ...cargasGuardadas[cargaIndex],
-        estadoActual: tracking.estadoActual
+
+        estadoActual:
+            tracking.estadoActual,
+
+        fechaEntregaReal:
+            tracking.fechaEntregaReal || null
+
     };
 
     storageService.set(
+
         storageService.keys.cargas,
+
         cargasGuardadas
+
     );
+
 }
 
 storageService

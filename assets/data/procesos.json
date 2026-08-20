@@ -157,7 +157,7 @@
     }
   },
 
-  "Guatemala": {
+  "GUA": {
     "DespachoNacional": {
       "nombre": "Despacho Nacional",
       "etapas": [
@@ -280,7 +280,7 @@
     }
   },
 
-  "RepublicaDominicana": {
+  "RD": {
     "Recepcion": {
       "nombre": "Recepcion RD",
       "etapas": [

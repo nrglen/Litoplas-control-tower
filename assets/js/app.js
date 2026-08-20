@@ -6,6 +6,10 @@ import filterView from "./filter-view.js";
 import cargaForm from "./carga-form.js";
 import storageService from "./storage-service.js";
 import etapaForm from "./etapa-form.js";
+import infoView from "./info-view.js";
+import historialView from "./historial-view.js";
+import documentsView from "./documents-view.js";
+
 class App {
 
     constructor(){
@@ -15,6 +19,7 @@ class App {
         this.alertas = [];
         this.cargaForm = cargaForm;
         this.etapaForm = etapaForm;
+        this.cargaSeleccionada = null;
 
         this.filtros = {
             paises: [],
@@ -46,8 +51,19 @@ class App {
         this.configurarEventos();
 
         if(this.cargas.length > 0){
-            trackingView.cargarTimeline(this.cargas[0].id, this.cargas[0]);
-        }
+
+    this.cargaSeleccionada =
+        this.cargas[0];
+
+    trackingView.cargarTimeline(
+
+        this.cargas[0].id,
+
+        this.cargas[0]
+
+    );
+
+}
 
         window.addEventListener("online", async () => {
             await this.cargarDatos();
@@ -169,36 +185,51 @@ class App {
     CARGAR DATOS
     ============================
     */
+async cargarDatos(){
 
-    async cargarDatos(){
+    try{
 
-        try{
+        const cargasJson =
+            await dataService.getCargas();
 
-            this.cargas =
-                await dataService.getCargas();
+        const trackingsJson =
+            await dataService.getTracking();
 
-            this.trackings =
-                await dataService.getTracking();
+        const alertasJson =
+            await dataService.getAlertas();
 
-            this.alertas =
-                await dataService.getAlertas();
+        storageService.inicializarDatos(
 
-            storageService.inicializarDatos(
-                this.cargas,
-                this.trackings,
-                this.alertas,
-                [],
-                []
-            );
+            cargasJson,
 
-        }
-        catch(error){
+            trackingsJson,
 
-            console.error(error);
+            alertasJson,
 
-        }
+            [],
+
+            []
+
+        );
+
+        this.cargas =
+            storageService.getCargas();
+
+        this.trackings =
+            storageService.getTrackings();
+
+        this.alertas =
+            storageService.getAlertas();
 
     }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
 
     /*
     ============================
@@ -428,21 +459,45 @@ class App {
         const cargasGuardadas = storageService.getCargas();
         const cargaGuardadaIndex = cargasGuardadas.findIndex(item => item.id == cargaId);
 
-        if(cargaGuardadaIndex >= 0 && tracking && tracking.estadoActual){
-            cargasGuardadas[cargaGuardadaIndex] = {
-                ...cargasGuardadas[cargaGuardadaIndex],
-                estadoActual: tracking.estadoActual
-            };
-            storageService.set(storageService.keys.cargas, cargasGuardadas);
-        }
+        if(cargaGuardadaIndex >= 0 && tracking){
+
+    cargasGuardadas[cargaGuardadaIndex] = {
+
+        ...cargasGuardadas[cargaGuardadaIndex],
+
+        estadoActual:
+            tracking.estadoActual,
+
+        fechaEntregaReal:
+            tracking.fechaEntregaReal || null
+
+    };
+
+    storageService.set(
+
+        storageService.keys.cargas,
+
+        cargasGuardadas
+
+    );
+}
 
         const cargaIndex = this.cargas.findIndex(item => item.id == cargaId);
-        if(cargaIndex >= 0 && tracking && tracking.estadoActual){
-            this.cargas[cargaIndex] = {
-                ...this.cargas[cargaIndex],
-                estadoActual: tracking.estadoActual
-            };
-        }
+        if(cargaIndex >= 0 && tracking){
+
+    this.cargas[cargaIndex] = {
+
+        ...this.cargas[cargaIndex],
+
+        estadoActual:
+            tracking.estadoActual,
+
+        fechaEntregaReal:
+            tracking.fechaEntregaReal || null
+
+    };
+
+}
 
         const trackingIndex = this.trackings.findIndex(item => item.cargaId == cargaId);
         if(trackingIndex >= 0){
@@ -454,6 +509,194 @@ class App {
     }
 
     configurarEventos(){
+
+        document
+    .getElementById(
+        "btnEliminarCarga"
+    )
+    ?.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            if(
+                !this.cargaSeleccionada
+            ){
+
+                alert(
+                    "Seleccione una carga"
+                );
+
+                return;
+
+            }
+
+            const confirmar =
+                confirm(
+
+                    `¿Desea eliminar la carga ${this.cargaSeleccionada.ciim}?`
+
+                );
+
+            if(!confirmar){
+                return;
+            }
+
+            storageService.deleteCarga(
+                this.cargaSeleccionada.id
+            );
+
+            location.reload();
+
+        }
+
+    );
+
+        document
+    .getElementById(
+        "tabDocs"
+    )
+    ?.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            const container =
+                document.getElementById(
+                    "trackingContainer"
+                );
+
+            if(
+                !container ||
+                !this.cargaSeleccionada
+            ){
+                return;
+            }
+
+            const tracking =
+                this.trackings.find(
+                    item =>
+                        item.cargaId ==
+                        this.cargaSeleccionada.id
+                );
+
+            if(
+                !tracking ||
+                !tracking.etapas
+            ){
+                return;
+            }
+
+            let html = `
+
+                <div class="tracking-header">
+
+                    <h2>
+                        📎 Documentos
+                    </h2>
+
+                </div>
+
+                <div class="documents-view">
+
+            `;
+
+            tracking.etapas.forEach(etapa=>{
+
+                html += `
+
+                    <div class="doc-stage">
+
+                        <h3>
+                            ${etapa.nombre}
+                        </h3>
+
+                        ${documentsView.renderDocumentos(
+
+                            etapa.documentos || [],
+
+                            etapa.documentosRequeridos || []
+
+                        )}
+
+                    </div>
+
+                `;
+
+            });
+
+            html += `
+                </div>
+            `;
+
+            container.innerHTML = html;
+
+        }
+
+    );
+
+        document
+    .getElementById(
+        "tabHistorial"
+    )
+    ?.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            const container =
+                document.getElementById(
+                    "trackingContainer"
+                );
+
+            if(
+                !container ||
+                !this.cargaSeleccionada
+            ){
+                return;
+            }
+
+            container.innerHTML =
+
+                historialView.render(
+
+                    this.cargaSeleccionada.id
+
+                );
+
+        }
+
+    );
+
+        window.addEventListener(
+
+            "cargaCreada",
+
+            async(event)=>{
+
+                const nuevaCarga =
+                    event.detail.carga;
+
+                await this.cargarDatos();
+
+                this.renderTabla();
+
+                this.renderDashboard();
+
+                this.aplicarFiltros();
+
+                await trackingView
+                    .cargarTimeline(
+                        nuevaCarga.id,
+                        nuevaCarga
+                    );
+
+            }
+
+        );
 
         document.addEventListener(
             "click",
@@ -479,42 +722,149 @@ class App {
                     this.cargas.find(
                         item => item.id == id
                     );
+                this.cargaSeleccionada = carga;
 
                 await trackingView
                     .cargarTimeline(id, carga);
 
             }
         );
+        document
+    .getElementById(
+        "tabInfo"
+    )
+    ?.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            const container =
+                document.getElementById(
+                    "trackingContainer"
+                );
+
+            if(
+                !container ||
+                !this.cargaSeleccionada
+            ){
+                return;
+            }
+
+            container.innerHTML =
+                infoView.render(
+                    this.cargaSeleccionada
+                );
+
+        }
+
+    );
+    document
+    .getElementById(
+        "tabTracking"
+    )
+    ?.addEventListener(
+
+        "click",
+
+        async()=>{
+
+            if(
+                !this.cargaSeleccionada
+            ){
+                return;
+            }
+
+            await trackingView
+                .cargarTimeline(
+
+                    this.cargaSeleccionada.id,
+
+                    this.cargaSeleccionada
+
+                );
+
+        }
+
+    );
+
 
         window.addEventListener(
-            "trackingActualizado",
-            async(event)=>{
 
-                const cargaId =
-                    event.detail.cargaId;
+    "trackingActualizado",
 
-                const tracking =
-                    storageService.getTrackings().find(item => item.cargaId == cargaId);
+    async(event)=>{
 
-                if(tracking){
-                    this.sincronizarEstadoCarga(cargaId, tracking);
-                }
+        const cargaId =
+            event.detail.cargaId;
 
-                this.renderTabla();
-                this.aplicarFiltros();
-                this.renderDashboard();
+        const tracking =
+            storageService
+                .getTrackings()
+                .find(
+                    item =>
+                        item.cargaId ==
+                        cargaId
+                );
 
-                const carga =
-                    this.cargas.find(item => item.id == cargaId);
+        if(tracking){
 
-                await trackingView
-                    .cargarTimeline(
-                        cargaId,
-                        carga
-                    );
+            this.sincronizarEstadoCarga(
+                cargaId,
+                tracking
+            );
+
+        }
+
+        this.renderTabla();
+
+        setTimeout(()=>{
+
+            const fila =
+                document.querySelector(
+                    `[data-id="${cargaId}"]`
+                );
+
+            if(fila){
+
+                this.seleccionarFila(
+                    fila
+                );
+
+                fila.scrollIntoView({
+
+                    behavior:"smooth",
+
+                    block:"center"
+
+                });
 
             }
-        );
+
+        },100);
+
+        this.aplicarFiltros();
+
+        this.renderDashboard();
+
+        const carga =
+            this.cargas.find(
+                item =>
+                    item.id == cargaId
+            );
+
+        await trackingView
+            .cargarTimeline(
+
+                cargaId,
+
+                carga
+
+            );
+
+    }
+
+);
 
         this.configurarFiltros();
 

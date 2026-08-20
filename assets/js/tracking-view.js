@@ -3,8 +3,78 @@ import timelineEngine from "./timeline-engine.js";
 import documentsView from "./documents-view.js";
 import etapaForm from "./etapa-form.js";
 import storageService from "./storage-service.js";
-
+import cargaForm from "./carga-form.js";
 class TrackingView {
+
+    configurarAccionesCarga(cargaId){
+
+    const btnEliminar =
+        document.getElementById(
+            "btnEliminarCarga"
+        );
+
+    if(btnEliminar){
+
+        btnEliminar.addEventListener(
+            "click",
+            ()=>{
+
+                const confirmar =
+                    confirm(
+                        "¿Desea eliminar esta carga?"
+                    );
+
+                if(!confirmar){
+                    return;
+                }
+
+                storageService.deleteCarga(
+                    cargaId
+                );
+
+                location.reload();
+
+            }
+        );
+
+    }
+
+   const btnEditar =
+    document.getElementById(
+        "btnEditarCarga"
+    );
+
+if(btnEditar){
+
+    btnEditar.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            const carga =
+                storageService
+                    .getCargas()
+                    .find(
+                        item =>
+                            item.id == cargaId
+                    );
+
+            if(!carga){
+                return;
+            }
+
+            cargaForm.abrirEdicion(
+                carga
+            );
+
+        }
+
+    );
+
+}
+
+}
 
     constructor(){
 
@@ -28,12 +98,51 @@ class TrackingView {
                 item => item.cargaId == cargaId
             );
 
-        if(!tracking){
-            tracking = {
-                cargaId,
-                estadoActual: "Solicitud Cliente",
-                etapas: []
-            };
+        if(
+    !tracking &&
+    carga &&
+    procesos?.[carga.pais]?.[carga.proceso]
+){
+
+    const timeline =
+
+        timelineEngine
+            .generarTimelineInicial(
+
+                procesos[
+                    carga.pais
+                ][
+                    carga.proceso
+                ],
+
+                carga.fechaInicioProceso
+
+            );
+
+        tracking = {
+
+            id: Date.now(),
+
+            cargaId: carga.id,
+
+            estadoActual:
+                timeline[0]?.nombre ||
+
+                "Solicitud Cliente",
+
+            retrasoAcumuladoDias: 0,
+
+            porcentajeCompletado: 0,
+
+            etapas: timeline
+
+        };
+
+        storageService
+            .saveTracking(
+            tracking
+            );
+
         }
 
         if(carga && procesos?.[carga.pais]?.[carga.proceso]){
@@ -157,7 +266,41 @@ class TrackingView {
         </div>
         `;
 
+        html += `
+
+    <div class="acciones-carga">
+
+        <h3>
+            Acciones de la carga
+        </h3>
+
+        <div class="acciones-carga-botones">
+
+            <button
+                id="btnEditarCarga"
+                class="btn-accion"
+            >
+                ✏️ Editar carga
+            </button>
+
+            <button
+                id="btnEliminarCarga"
+                class="btn-danger"
+            >
+                🗑 Eliminar carga
+            </button>
+
+        </div>
+
+    </div>
+
+`;
+
+
         this.container.innerHTML = html;
+        this.configurarAccionesCarga(
+        tracking.cargaId
+        );
         this.configurarBotonesEditar();
         this.configurarToggles();
 

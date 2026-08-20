@@ -12,8 +12,8 @@ class DashboardEngine {
 
         return cargas.filter(carga =>
 
-            carga.estadoActual !==
-            "Entrega Cliente"
+            carga.estadoActual !== "Entregado" &&
+            carga.estadoActual !== "Entrega Cliente"
 
         ).length;
 
@@ -30,8 +30,8 @@ class DashboardEngine {
 
         return cargas.filter(carga =>
 
-            carga.estadoActual ===
-            "Entrega Cliente"
+            carga.estadoActual === "Entregado" ||
+            carga.estadoActual === "Entrega Cliente"
 
         ).length;
 

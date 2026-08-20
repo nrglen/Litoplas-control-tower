@@ -245,33 +245,57 @@ class BusinessRules {
 
     calcularOTIF(cargas){
 
-        const entregadas =
-            cargas.filter(
-                c => c.fechaEntregaReal
-            );
+    const entregadas =
 
-        if(entregadas.length === 0){
+        cargas.filter(
 
-            return 0;
-
-        }
-
-        const aTiempo = entregadas.filter(
             c =>
-                new Date(c.fechaEntregaReal)
-                <=
-                new Date(
-                    c.fechaEntregaCompromiso
-                )
+
+                c.estadoActual === "Entregado"
+
+                &&
+
+                c.fechaEntregaReal
+
         );
 
-        return Math.round(
-            (aTiempo.length /
-             entregadas.length) * 100
-        );
+    if(entregadas.length === 0){
+
+        return 0;
 
     }
 
+    const aTiempo =
+
+        entregadas.filter(c => {
+
+            const fechaReal =
+                new Date(
+                    c.fechaEntregaReal
+                );
+
+            const fechaCompromiso =
+                new Date(
+                    c.fechaCompromiso
+                );
+
+            return (
+                fechaReal <=
+                fechaCompromiso
+            );
+
+        });
+
+    return Math.round(
+
+        (
+            aTiempo.length /
+            entregadas.length
+        ) * 100
+
+    );
+
+}
 
     /*
     ========================================
