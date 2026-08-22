@@ -6,6 +6,163 @@ import storageService from "./storage-service.js";
 import cargaForm from "./carga-form.js";
 class TrackingView {
 
+    configurarCargaDocumentos(){
+
+    const zonas =
+        document.querySelectorAll(
+            ".dropzone-documentos"
+        );
+
+    zonas.forEach(zona=>{
+
+        const input =
+            zona.querySelector(
+                ".input-documento"
+            );
+
+        zona.addEventListener(
+
+            "click",
+
+            ()=>{
+
+                input.click();
+
+            }
+
+        );
+
+   input.addEventListener(
+
+    "change",
+
+    event=>{
+
+        const archivo =
+            event.target.files[0];
+
+        if(!archivo){
+            return;
+        }
+
+        const reader =
+            new FileReader();
+
+        reader.onload = ()=>{
+
+    const contenido =
+        reader.result;
+
+    const cargaId =
+        Number(
+            zona.dataset.carga
+        );
+
+    const nombreEtapa =
+        zona.dataset.etapa;
+
+    const trackings =
+        storageService.getTrackings();
+
+    const tracking =
+        trackings.find(
+            item =>
+                item.cargaId === cargaId
+        );
+
+    if(!tracking){
+        return;
+    }
+
+    const etapa =
+        tracking.etapas.find(
+            item =>
+                item.nombre === nombreEtapa
+        );
+
+    if(!etapa){
+        return;
+    }
+
+    etapa.documentos =
+        etapa.documentos || [];
+
+    etapa.documentos.push({
+
+        id: Date.now(),
+
+        nombre:
+            archivo.name,
+
+        tipo:
+            archivo.name,
+
+        fechaCarga:
+            new Date()
+                .toISOString(),
+
+        tamano:
+            archivo.size,
+
+        archivo:
+            contenido
+
+    });
+
+    storageService.updateTracking(
+        cargaId,
+        tracking
+    );
+
+    storageService.registrarHistorial(
+
+        cargaId,
+
+        "Usuario",
+
+        "Documento cargado",
+
+        archivo.name
+
+    );
+
+    window.dispatchEvent(
+
+        new CustomEvent(
+
+            "trackingActualizado",
+
+            {
+
+                detail:{
+                    cargaId
+                }
+
+            }
+
+        )
+
+    );
+
+    alert(
+        "Documento cargado correctamente"
+    );
+
+};
+
+        reader.readAsDataURL(
+            archivo
+        );
+
+    }
+
+);
+
+    });
+
+}
+
+
     configurarAccionesCarga(cargaId){
 
     const btnEliminar =
@@ -303,6 +460,9 @@ if(btnEditar){
         );
         this.configurarBotonesEditar();
         this.configurarToggles();
+        this.configurarCargaDocumentos();
+        this.configurarDocumentos();
+
 
     }
 
@@ -399,9 +559,100 @@ if(btnEditar){
                     </p>
 
                     ${documentsView.renderDocumentos(
-                        documentos,
-                        documentosRequeridos
-                    )}
+    documentos,
+    documentosRequeridos
+)}
+
+<div class="documentos-cargados">
+
+    <div class="documentos-header">
+
+        <h5>
+            📂 Documentos cargados
+        </h5>
+
+    </div>
+
+    ${
+        documentos.length === 0
+
+        ?
+
+        `
+        <p>No hay documentos cargados</p>
+        `
+
+        :
+
+        documentos.map(doc => `
+
+            <div class="documento-cargado">
+
+                <span>
+                    📄 ${doc.nombre}
+                </span>
+
+                <div class="documento-acciones">
+
+                    <button
+                        class="descargar-documento"
+                        data-id="${doc.id}"
+                        data-carga="${tracking.cargaId}"
+                        data-etapa="${etapa.nombre}"
+                    >
+                        ⬇ Descargar
+                    </button>
+
+                    <button
+                        class="eliminar-documento"
+                        data-id="${doc.id}"
+                        data-carga="${tracking.cargaId}"
+                        data-etapa="${etapa.nombre}"
+                    >
+                        🗑
+                    </button>
+
+                </div>
+
+            </div>
+
+        `).join("")
+    }
+
+</div>
+
+<div class="acciones-documentos-etapa">
+
+    <button
+        class="descargar-todos"
+        data-carga="${tracking.cargaId}"
+        data-etapa="${etapa.nombre}"
+        ${documentos.length === 0 ? "disabled" : ""}
+    >
+        ⬇ Descargar todos los documentos
+    </button>
+
+</div>
+
+<div
+    class="dropzone-documentos"
+    data-carga="${tracking.cargaId}"
+    data-etapa="${etapa.nombre}"
+>
+
+    📂 Arrastre archivos aquí
+
+    <br>
+
+    o haga clic para seleccionar
+
+    <input
+        type="file"
+        class="input-documento"
+        hidden
+    >
+
+</div>
 
                 </div>
 
@@ -570,7 +821,12 @@ botones.forEach(boton => {
                         item.nombre ===
                         nombreEtapa
 
+                        
+                        
+
                 );
+
+
 
             if(!etapa){
                 return;
@@ -588,6 +844,266 @@ botones.forEach(boton => {
 });
 
 }
+configurarDocumentos(){
+
+    document
+        .querySelectorAll(
+    ".descargar-documento"
+)
+        .forEach(boton=>{
+
+            boton.addEventListener(
+
+                "click",
+
+                ()=>{
+
+                    const cargaId =
+                        Number(
+                            boton.dataset.carga
+                        );
+
+                    const etapaNombre =
+                        boton.dataset.etapa;
+
+                    const documentoId =
+                        Number(
+                            boton.dataset.id
+                        );
+
+                    const tracking =
+                        storageService
+                            .getTrackings()
+                            .find(
+                                t =>
+                                    t.cargaId === cargaId
+                            );
+
+                    if(!tracking){
+                        return;
+                    }
+
+                    const etapa =
+                        tracking.etapas.find(
+                            e =>
+                                e.nombre === etapaNombre
+                        );
+
+                    if(!etapa){
+                        return;
+                    }
+
+                    const documento =
+                        etapa.documentos.find(
+                            d =>
+                                d.id === documentoId
+                        );
+
+                    if(!documento){
+                        return;
+                    }
+
+                    const enlace =
+    document.createElement(
+        "a"
+    );
+
+enlace.href =
+    documento.archivo;
+
+enlace.download =
+    documento.nombre;
+
+document.body.appendChild(
+    enlace
+);
+
+enlace.click();
+
+enlace.remove();
+
+                }
+
+            );
+
+        });
+document
+    .querySelectorAll(
+        ".descargar-todos"
+    )
+    .forEach(boton=>{
+
+        boton.addEventListener(
+
+            "click",
+
+            ()=>{
+
+                const cargaId =
+                    Number(
+                        boton.dataset.carga
+                    );
+
+                const etapaNombre =
+                    boton.dataset.etapa;
+
+                const tracking =
+                    storageService
+                        .getTrackings()
+                        .find(
+                            item =>
+                                item.cargaId === cargaId
+                        );
+
+                if(!tracking){
+                    return;
+                }
+
+                const etapa =
+                    tracking.etapas.find(
+                        item =>
+                            item.nombre === etapaNombre
+                    );
+
+                if(!etapa){
+                    return;
+                }
+
+                const documentos =
+                    etapa.documentos || [];
+
+                documentos.forEach(doc=>{
+
+                    const enlace =
+                        document.createElement(
+                            "a"
+                        );
+
+                    enlace.href =
+                        doc.archivo;
+
+                    enlace.download =
+                        doc.nombre;
+
+                    document.body.appendChild(
+                        enlace
+                    );
+
+                    enlace.click();
+
+                    enlace.remove();
+
+                });
+
+            }
+
+        );
+
+    });
+
+        document
+    .querySelectorAll(
+        ".eliminar-documento"
+    )
+    .forEach(boton=>{
+
+        boton.addEventListener(
+
+            "click",
+
+            ()=>{
+
+                const confirmar =
+                    confirm(
+                        "¿Desea eliminar este documento?"
+                    );
+
+                if(!confirmar){
+                    return;
+                }
+
+                const cargaId =
+                    Number(
+                        boton.dataset.carga
+                    );
+
+                const etapaNombre =
+                    boton.dataset.etapa;
+
+                const documentoId =
+                    Number(
+                        boton.dataset.id
+                    );
+
+                const tracking =
+                    storageService
+                        .getTrackings()
+                        .find(
+                            item =>
+                                item.cargaId === cargaId
+                        );
+
+                if(!tracking){
+                    return;
+                }
+
+                const etapa =
+                    tracking.etapas.find(
+                        item =>
+                            item.nombre === etapaNombre
+                    );
+
+                if(!etapa){
+                    return;
+                }
+
+                etapa.documentos =
+                    etapa.documentos.filter(
+                        doc =>
+                            doc.id !== documentoId
+                    );
+
+                storageService.updateTracking(
+                    cargaId,
+                    tracking
+                );
+
+                storageService.registrarHistorial(
+
+                    cargaId,
+
+                    "Usuario",
+
+                    "Documento eliminado",
+
+                    `Documento ${documentoId}`
+
+                );
+
+                window.dispatchEvent(
+
+                    new CustomEvent(
+
+                        "trackingActualizado",
+
+                        {
+                            detail:{
+                                cargaId
+                            }
+                        }
+
+                    )
+
+                );
+
+            }
+
+        );
+
+    });
+
+}
 }
 
 export default new TrackingView();
+

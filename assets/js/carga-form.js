@@ -177,6 +177,8 @@ class CargaForm {
     }
 
     async guardar(){
+        const esEdicion =
+                this.modoEdicion;
 
         const datos = {
 
@@ -251,6 +253,8 @@ class CargaForm {
                 "Solicitud Cliente"
         };
 
+        
+
         if(!datos.fechaInicioProceso){
 
             alert(
@@ -320,8 +324,10 @@ class CargaForm {
 }
 
         alert(
-            "Carga creada correctamente"
-        );
+    esEdicion
+        ? "Carga actualizada correctamente"
+        : "Carga creada correctamente"
+);
 
         this.form.reset();
         this.cerrar();
